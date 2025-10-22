@@ -1,0 +1,140 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Customer {
+  id         String    @id @default(cuid())
+  name       String
+  email      String?
+  phone      String?
+  address    String?
+  hourlyRate Float
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  
+  timeEntries TimeEntry[]
+  invoices    Invoice[]
+}
+
+model TimeEntry {
+  id         String   @id @default(cuid())
+  date       DateTime
+  hours      Float
+  notes      String?
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id])
+  invoiceId  String?
+  invoice    Invoice? @relation(fields: [invoiceId], references: [id])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  
+  @@index([date])
+  @@index([customerId])
+}
+
+model Invoice {
+  id            String      @id @default(cuid())
+  invoiceNumber String      @unique
+  customerId    String
+  customer      Customer    @relation(fields: [customerId], references: [id])
+  dateFrom      DateTime
+  dateTo        DateTime
+  totalHours    Float
+  hourlyRate    Float
+  totalAmount   Float
+  status        String      @default("draft") // draft, sent, paid
+  dueDate       DateTime
+  paidDate      DateTime?
+  notes         String?
+  pdfUrl        String?
+  timeEntries   TimeEntry[]
+  transactions  Transaction[]
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  
+  @@index([status])
+  @@index([customerId])
+}
+
+model Account {
+  id           String        @id @default(cuid())
+  name         String
+  balance      Float         @default(0)
+  accountType  String        @default("business") // business, personal
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  
+  transactions Transaction[]
+}
+
+model Transaction {
+  id            String   @id @default(cuid())
+  accountId     String
+  account       Account  @relation(fields: [accountId], references: [id])
+  type          String   // income, expense, salary
+  amount        Float
+  description   String
+  date          DateTime
+  invoiceId     String?
+  invoice       Invoice? @relation(fields: [invoiceId], references: [id])
+  salaryPayoutId String?
+  salaryPayout  SalaryPayout? @relation(fields: [salaryPayoutId], references: [id])
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([accountId])
+  @@index([type])
+  @@index([date])
+}
+
+model SalaryPayout {
+  id                      String   @id @default(cuid())
+  grossSalary            Float
+  employerContributions  Float
+  pensionContribution    Float
+  pensionTax             Float
+  incomeTax              Float
+  netSalary              Float
+  totalCost              Float
+  municipality           String   @default("Stockholm")
+  payoutDate             DateTime
+  status                 String   @default("pending") // pending, paid
+  transactions           Transaction[]
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+  
+  @@index([payoutDate])
+  @@index([status])
+}
+
+model Holiday {
+  id       String   @id @default(cuid())
+  date     DateTime @unique
+  name     String
+  type     String   @default("public") // public, custom
+  createdAt DateTime @default(now())
+  
+  @@index([date])
+}
+
+model Settings {
+  id                  String   @id @default(cuid())
+  companyName        String?
+  companyEmail       String?
+  companyPhone       String?
+  companyAddress     String?
+  companyOrgNumber   String?
+  defaultHourlyRate  Float?
+  vatRate            Float    @default(0.25)
+  municipality       String   @default("Stockholm")
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
