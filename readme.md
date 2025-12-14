@@ -234,7 +234,7 @@ Styling: Tailwind CSS
 
 
 
-Database: SQLite with Prisma ORM
+Database: PostgreSQL with Prisma ORM
 
 
 
@@ -314,7 +314,11 @@ npm install
 
 Set up the database:
 
+**Note**: You need PostgreSQL running. See the [Deployment to Vercel](#-deployment-to-vercel) section for setup options.
 
+cp .env.example .env
+
+# Edit .env and set your DATABASE_URL
 
 npx prisma generate
 
@@ -356,62 +360,83 @@ Open http://localhost:3000 in your browser
 
 ## 🚀 Deployment to Vercel
 
-This application is ready to be deployed on Vercel. Follow these steps:
+This application uses PostgreSQL and is ready to be deployed on Vercel.
 
 ### Quick Deploy
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/mericstam/freelance-pilot)
 
-### Manual Deployment
+### Prerequisites
 
-1. **Install Vercel CLI** (if not already installed):
+**Database Setup**: This application requires a PostgreSQL database. We recommend using Vercel Postgres for seamless integration.
+
+**Recommended Database Options**:
+- **Vercel Postgres** (easiest for Vercel): https://vercel.com/docs/storage/vercel-postgres
+- **Supabase** (free tier available): https://supabase.com
+- **Neon** (serverless PostgreSQL): https://neon.tech
+- **Railway** (easy setup): https://railway.app
+
+### Deployment Steps
+
+1. **Set up Vercel Postgres** (recommended):
+   - Go to your Vercel project dashboard
+   - Navigate to the "Storage" tab
+   - Click "Create Database" and select "Postgres"
+   - Vercel will automatically set the `DATABASE_URL` environment variable
+
+2. **Deploy to Vercel**:
    ```bash
+   # Install Vercel CLI if needed
    npm i -g vercel
-   ```
-
-2. **Important: Database Configuration**
    
-   ⚠️ **Note**: SQLite is not supported on Vercel's serverless environment. You need to migrate to a PostgreSQL database for production.
-
-   Recommended options:
-   - **Vercel Postgres** (easiest): https://vercel.com/docs/storage/vercel-postgres
-   - **Supabase** (free tier): https://supabase.com
-   - **Neon** (serverless Postgres): https://neon.tech
-   - **PlanetScale** (MySQL alternative): https://planetscale.com
-
-3. **Update Prisma Schema** for PostgreSQL:
-   ```prisma
-   datasource db {
-     provider = "postgresql"
-     url      = env("DATABASE_URL")
-   }
-   ```
-
-4. **Deploy to Vercel**:
-   ```bash
+   # Deploy
    vercel
    ```
 
-5. **Set Environment Variables** in Vercel Dashboard:
-   - Go to your project settings
-   - Add `DATABASE_URL` with your PostgreSQL connection string
-
-6. **Run Database Migrations**:
-   After first deployment, run:
+3. **Run Database Migrations**:
+   After first deployment:
    ```bash
+   # Pull environment variables from Vercel
    vercel env pull .env.local
+   
+   # Push database schema
    npx prisma db push
    ```
 
 ### Environment Variables
 
-Copy `.env.example` to `.env` and configure:
+The application requires the following environment variable:
+- `DATABASE_URL`: PostgreSQL connection string (automatically set by Vercel Postgres)
+
+For local development with PostgreSQL:
 ```bash
 cp .env.example .env
+# Edit .env and set your local PostgreSQL connection string
 ```
 
-Required variables:
-- `DATABASE_URL`: Your database connection string
+### Local Development with PostgreSQL
+
+1. Install PostgreSQL locally or use Docker:
+   ```bash
+   docker run --name freelance-pilot-db -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgres
+   ```
+
+2. Set up environment variables:
+   ```bash
+   cp .env.example .env
+   # Update DATABASE_URL in .env
+   ```
+
+3. Run migrations:
+   ```bash
+   npx prisma generate
+   npx prisma db push
+   ```
+
+4. Start development server:
+   ```bash
+   npm run dev
+   ```
 
 🗂️ Project Structure
 
