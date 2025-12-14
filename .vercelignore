@@ -1,0 +1,34 @@
+# Dependencies
+node_modules
+
+# Database files (SQLite not supported on Vercel)
+*.db
+*.db-journal
+/prisma/dev.db
+/prisma/dev.db-journal
+
+# Local env files
+.env*.local
+.env
+
+# Build artifacts
+.next
+out
+
+# Misc
+.DS_Store
+*.pem
+.vscode
+.idea
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Test files
+coverage
+*.test.ts
+*.test.tsx
+*.spec.ts
+*.spec.tsx
