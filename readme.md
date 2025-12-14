@@ -354,6 +354,65 @@ Open http://localhost:3000 in your browser
 
 
 
+## 🚀 Deployment to Vercel
+
+This application is ready to be deployed on Vercel. Follow these steps:
+
+### Quick Deploy
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/mericstam/freelance-pilot)
+
+### Manual Deployment
+
+1. **Install Vercel CLI** (if not already installed):
+   ```bash
+   npm i -g vercel
+   ```
+
+2. **Important: Database Configuration**
+   
+   ⚠️ **Note**: SQLite is not supported on Vercel's serverless environment. You need to migrate to a PostgreSQL database for production.
+
+   Recommended options:
+   - **Vercel Postgres** (easiest): https://vercel.com/docs/storage/vercel-postgres
+   - **Supabase** (free tier): https://supabase.com
+   - **Neon** (serverless Postgres): https://neon.tech
+   - **PlanetScale** (MySQL alternative): https://planetscale.com
+
+3. **Update Prisma Schema** for PostgreSQL:
+   ```prisma
+   datasource db {
+     provider = "postgresql"
+     url      = env("DATABASE_URL")
+   }
+   ```
+
+4. **Deploy to Vercel**:
+   ```bash
+   vercel
+   ```
+
+5. **Set Environment Variables** in Vercel Dashboard:
+   - Go to your project settings
+   - Add `DATABASE_URL` with your PostgreSQL connection string
+
+6. **Run Database Migrations**:
+   After first deployment, run:
+   ```bash
+   vercel env pull .env.local
+   npx prisma db push
+   ```
+
+### Environment Variables
+
+Copy `.env.example` to `.env` and configure:
+```bash
+cp .env.example .env
+```
+
+Required variables:
+- `DATABASE_URL`: Your database connection string
+
 🗂️ Project Structure
 
 
