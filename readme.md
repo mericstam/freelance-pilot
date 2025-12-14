@@ -418,8 +418,9 @@ cp .env.example .env
 
 1. Install PostgreSQL locally or use Docker:
    ```bash
-   docker run --name freelance-pilot-db -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgres
+   docker run --name freelance-pilot-db -e POSTGRES_PASSWORD=your_secure_password -p 5432:5432 -d postgres
    ```
+   > **Note**: Replace `your_secure_password` with a strong password of your choice.
 
 2. Set up environment variables:
    ```bash
