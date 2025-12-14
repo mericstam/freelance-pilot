@@ -1,16 +1,6 @@
 {
-  "version": 2,
-  "buildCommand": "prisma generate && next build",
+  "buildCommand": "next build",
   "devCommand": "next dev",
-  "installCommand": "npm install",
-  "framework": "nextjs",
-  "regions": ["fra1"],
-  "env": {
-    "DATABASE_URL": "@database_url"
-  },
-  "build": {
-    "env": {
-      "DATABASE_URL": "@database_url"
-    }
-  }
+  "installCommand": "npm install && prisma generate",
+  "framework": "nextjs"
 }
