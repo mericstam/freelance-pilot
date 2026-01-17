@@ -5,7 +5,6 @@ import { formatCurrency, formatDate } from '@/app/lib/utils'
 import { 
   calculateSwedishSalary, 
   calculateRequiredInvoiceAmount,
-  MUNICIPALITY_TAX_RATES,
   TAX_CONSTANTS
 } from '@/app/lib/tax-calculations'
 import { Calculator, Info, DollarSign, TrendingUp, AlertCircle } from 'lucide-react'
@@ -13,7 +12,6 @@ import { Calculator, Info, DollarSign, TrendingUp, AlertCircle } from 'lucide-re
 export default function SalaryContent() {
   // Calculator inputs
   const [grossSalary, setGrossSalary] = useState('50000')
-  const [municipality, setMunicipality] = useState('Stockholm')
   const [pensionPercentage, setPensionPercentage] = useState('4.5')
   
   // Target net salary calculator
@@ -21,13 +19,13 @@ export default function SalaryContent() {
   
   const calculation = calculateSwedishSalary(
     parseFloat(grossSalary) || 0,
-    municipality,
+    'Stockholm',
     (parseFloat(pensionPercentage) || 0) / 100
   )
   
   const requiredInvoice = calculateRequiredInvoiceAmount(
     parseFloat(targetNetSalary) || 0,
-    municipality,
+    'Stockholm',
     (parseFloat(pensionPercentage) || 0) / 100
   )
 
@@ -57,21 +55,6 @@ export default function SalaryContent() {
                 onChange={(e) => setGrossSalary(e.target.value)}
                 className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
               />
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Municipality</label>
-              <select
-                value={municipality}
-                onChange={(e) => setMunicipality(e.target.value)}
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-              >
-                {Object.keys(MUNICIPALITY_TAX_RATES).map((mun) => (
-                  <option key={mun} value={mun}>
-                    {mun} ({(MUNICIPALITY_TAX_RATES[mun] * 100).toFixed(2)}%)
-                  </option>
-                ))}
-              </select>
             </div>
             
             <div>
@@ -201,7 +184,7 @@ export default function SalaryContent() {
               <div className="text-sm text-yellow-800">
                 <p className="font-medium mb-1">Important Considerations:</p>
                 <ul className="list-disc pl-5 space-y-1">
-                  <li>These calculations are estimates based on 2024 tax rates</li>
+                  <li>These calculations are based on 2026 tax rates</li>
                   <li>Remember to save for vacation and sick days</li>
                   <li>Consider additional business expenses</li>
                   <li>Consult with an accountant for precise calculations</li>
